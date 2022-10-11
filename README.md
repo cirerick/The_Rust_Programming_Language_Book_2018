@@ -2,4 +2,6 @@
 
 Excercises from the "The Rust Programming Language" book.
 
-For my own practice.
+For my own practice, notes, and journey through this book.
+
+Book by Steve Klabnik and Carol Nichols
