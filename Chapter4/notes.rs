@@ -214,17 +214,99 @@ fn no_dangle() -> String {
 }
 
 //------------------- The Slice Type ----------------------------------
+fn slice_main() {
+    let mut s = String::from("hello world");
 
-// basicaly get the position of after the last letter for the first word 
-fn first_word(s: String) -> usize {
-    let bytes = s.as_bytes();
+    let word = first_word(&s); //makes word = 5
 
-    for (i, &item) in bytes.iter().enumerate(){
-        if item == b' ' {
-            return i; 
-        }
-    }
+    s.clear(); //makes s = ""
 
-    s.len
 }
 
+// basicaly get the position of after the last letter for the first word 
+fn first_word(s: &String) -> usize {
+    let bytes = s.as_bytes(); //converts string to an array in bytes
+    //where each element carries a byte of the associated char
+
+    for (i, &item) in bytes.iter().enumerate(){ //iterate through the array, enumerate returns a tuple (the index as (i), and a reference to as (&item))
+        if item == b' ' { //the literal synatx for byte is (b), then ' ' is looking for space
+                          //whatever byte is a space, that is what we will compare with (item : char)
+            return i;// return position
+        }  
+    }
+
+    s.len() //return length of array
+}
+
+fn second_word(s: &String) -> (usize, usize) {
+    let bytes = s.as_bytes(); //converts string to an array in bytes
+    //where each element carries a byte of the associated char
+
+    for (i, &item) in bytes.iter().enumerate(){ //iterate through the array, enumerate returns a tuple (the index as (i), and a reference to as (&item))
+        
+        if item == b' ' { //the literal synatx for byte is (b), then ' ' is looking for space
+                          //whatever byte is a space, that is what we will compare with (item : char)
+            return (0,i);// return position
+        }  
+    }
+
+    return (0,s.len()) //return length of array
+}
+
+//string slices easily cuts strings
+fn slice_example(){
+    let s = String::from("hello world");
+
+    //refernce a section of that string an store that reference
+    let hello = &s[0..5]; //first usize is inclusive, second is exclusive
+    let world = &s[6..11]; //&s [inclusive_usize, exclusive_usize]
+
+    let hello = &s[..5]; //[start from the first element, exclusive_usize]
+    let hello_world = &s[0..];//[inclusive_usize, end at the last element]
+    let hello_world = &s[..]; //essentially reference the entire string
+
+
+}
+
+//rewriting first_word to return
+fn non_working_slice_example_main() {
+    let mut s = String::from("hello world");
+
+    let word = first_word(&s);
+
+    s.clear(); //error! <- YELL IT //due to mutating an immutable refernce to this data, word is preventing this UNSAFE!
+
+    println!("the first word is {}", word);
+} 
+
+fn return_slice_first_word(s : &String) -> &str {
+    let bytes = s.as_bytes();
+
+    for (i, &item) in bytes.iter().enumerate(){ 
+        if item == b' ' { 
+            return &s[..i];
+        }  
+    }
+
+    &s[..]; 
+    
+} //we can also do this with arrays with the same syntax |let arr_slice = &arr[..]; 
+ 
+//string literals being slice example from the book
+fn literal_slice_example() {
+    let my_string = String::from("hello world"); 
+
+    //first word works on slices of 'String's
+    let word = first_word(&my_string[..]);
+    
+    let my_string_literal = "hello world"; 
+
+    //first_word works on slices of string literals 
+    let word = first_word(&my_string_literal[..]);
+
+    //Because string literals *are* string slices already,
+    //this works too, without the slice syntax!
+    let word = first_word(my_string_literal);
+
+
+}
